@@ -1,0 +1,31 @@
+1.5.1 - 2015/06/04
+	* Updated i18n function to properly load translations.
+	* Updated Customer Purchase History data to use Payment Number rather than Payment ID.
+	* Fixed CSS conflict due to metaboxes using a class of "postbox-container" instead of "postbox"
+
+1.5.0 - 2014/01/15
+	* Add-on completely re-written from the ground-up.
+	* Added timestamps for tracking customer browsing duration.
+	* Added customer purchase history to transaction details, including their actual lifetime value (total amount spent across all non-cancelled, non-refunded completed orders).
+	* Added email tags for including browsing and purchase history in admin emails.
+	* Added ability to search purchase history by customer browser history.
+
+1.4.0 - 2013/11/20
+	* Introduced meets_requirements() check so that plugin will gracefully shut down if EDD is unavailable.
+
+1.3.0 - 2013/04/29
+	* Updated track_user_history() and get_user_history() methods to use EDD's new built-in session handler
+
+1.2.0 - 2013/03/22
+	* Completely rewrote the codebase to be much cleaner and better documented
+	* Fixed a bug that would break output if history was incomplete or not an array
+	* Fixed a bug that would break the referrer url with a duplicate "http://"
+
+1.1.0 - 2012/09/08
+	* Added helper function for parsing a referring URL's search query
+	* Added output to display user's search string (if applicable)
+	* Added sanity check so a new user session is only started if one has not already been set
+	* Added localization strings
+
+1.0.0 - 2012/08/01
+	* Initial Release
