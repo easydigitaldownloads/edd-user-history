@@ -83,6 +83,12 @@ class EDDUH_Track_History {
 	 */
 	public function save_user_history( $payment_meta ) {
 
+		// Bail early if not on the purchase screen
+		// Fixes issue as result of https://github.com/easydigitaldownloads/easy-digital-downloads/issues/5490#issuecomment-283978899
+		if ( ! did_action( 'edd_purchase' ) ) {
+			return $payment_meta;
+		}
+
 		// Grab user history from the current session
 		$user_history = $this->get_user_history();
 
@@ -95,10 +101,12 @@ class EDDUH_Track_History {
 			// Sanitize the referrer a bit differently
 			// than the rest because it may not be a URL.
 			$referrer = array_shift( $user_history );
-			$sanitized_history[] = array(
-				'url'  => sanitize_text_field( $referrer->url ),
-				'time' => absint( $referrer->time ),
-			);
+			if ( is_object( $referrer ) ) {
+				$sanitized_history[] = array(
+					'url'  => sanitize_text_field( $referrer->url ),
+					'time' => absint( $referrer->time ),
+				);
+			}
 
 			// Sanitize each additional URL
 			foreach ( $user_history as $history ) {

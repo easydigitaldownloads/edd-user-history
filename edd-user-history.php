@@ -3,7 +3,7 @@
  * Plugin Name: Easy Digital Downloads User History
  * Plugin URI: http://easydigitaldownloads.com/extensions/
  * Description: Track and store customer browsing history with their order.
- * Version: 1.5.1
+ * Version: 1.5.2
  * Author: Brian Richards
  * Author URI: http://rzen.net
  * License: GPL2
@@ -109,7 +109,7 @@ class EDD_User_History {
 	 */
 	public function licensed_updates() {
 		if ( class_exists( 'EDD_License' ) ) {
-			$license = new EDD_License( __FILE__, 'User History', '1.5.0', 'Brian Richards' );
+			$license = new EDD_License( __FILE__, 'User History', '1.5.2', 'Brian Richards' );
 		}
 	} /* licensed_updates() */
 

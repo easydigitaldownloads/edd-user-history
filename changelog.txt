@@ -1,3 +1,6 @@
+1.5.2 - 2017/03/03
+	* Update saving of user history to only occur during purchase action. Fixes bug that may occur where viewing/updating a payment destorys the customer's history.
+
 1.5.1 - 2015/06/04
 	* Updated i18n function to properly load translations.
 	* Updated Customer Purchase History data to use Payment Number rather than Payment ID.
