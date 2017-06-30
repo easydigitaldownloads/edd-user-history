@@ -87,3 +87,25 @@ function rzen_edduh_calculate_elapsed_time( $original_time = 0, $new_time = 0 ) 
 	}
 
 }
+
+/**
+ * Back Compat: Update older single-dimensional history array
+ * to be multi-dimensional so that we don't break old history.
+ *
+ * @since  1.5.0
+ *
+ * @param  array $user_history User's browsing history.
+ * @return array               Potentially updated history array.
+ */
+function rzen_edduh_normalize_history_array( $user_history = array() ) {
+
+	// If the first item isn't an array, none of them are
+	if ( is_array( $user_history ) && ! is_array( $user_history[0] ) ) {
+		foreach ( $user_history as $key => $url ) {
+			$user_history[ $key ] = array( 'url' => $url, 'time' => 0 );
+		}
+	}
+
+	return $user_history;
+
+}

@@ -1,3 +1,9 @@
+1.6.0 - 2017/06/30
+	* Introduced JS-based tracking to circumvent page caching.
+	* Introduced stand-alone database table to move active history away from cookie storage and transient dependency
+	* Updated order reporting tables to utilize admin color scheme colors for heading and border.
+	* Minor code improvements under the hood.
+
 1.5.2 - 2017/03/03
 	* Update saving of user history to only occur during purchase action. Fixes bug that may occur where viewing/updating a payment destorys the customer's history.
 
