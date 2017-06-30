@@ -17,9 +17,9 @@ class EDDUH_Track_History {
 	 */
 	public function __construct() {
 
-		// Connect to EDD
-		add_action( 'template_redirect', array( $this, 'update_user_history' ) );
-		add_action( 'edd_payment_meta', array( $this, 'save_user_history' ) );
+		// Connect to WooCommerce
+		add_action( 'edduh_visited_url', array( $this, 'update_customer_history' ), 10, 3 );
+		add_action( 'edd_payment_meta', array( $this, 'save_customer_history' ) );
 
 		// Uncomment the following action to enable devmode
 		// add_action( 'get_header', array( $this, 'devmode' ) );
@@ -27,61 +27,55 @@ class EDDUH_Track_History {
 	} /* __construct() */
 
 	/**
-	 * Returning user history from session.
+	 * Get customer's tracked browsing history.
 	 *
 	 * @since 1.5.0
 	 */
-	private function get_user_history() {
+	private function get_customer_history( $referrer = '' ) {
 
-		$user_history = EDDUH_Cookie_Helper::get_cookie();
+		$user_hash = EDDUH_Cookie_Helper::get_cookie();
+		$customer_history = edduh_get_page_history( $user_hash );
 
 		// If user has an established history, return that
-		if ( ! empty( $user_history ) ) {
-			return (array) $user_history;
+		if ( ! empty( $customer_history ) ) {
+			return (array) $customer_history;
 
 		// Otherwise, return an array with the original referrer
 		} else {
-			$referrer = isset( $_SERVER['HTTP_REFERER'] )
-				? $_SERVER['HTTP_REFERER']
-				: __( 'Direct Traffic', 'wcuh' );
+			$referrer = esc_url( $referrer )
+				? $referrer
+				: __( 'Direct Traffic', 'woocommerce-customer-history' );
 
 			return array( array( 'url' => $referrer, 'time' => time() ) );
 		}
 
-	} /* get_user_history() */
+	} /* get_customer_history() */
 
 	/**
-	 * Initialize tracking of user's browsing history
+	 * Update customer's tracked browsing history.
 	 *
 	 * @since 1.5.0
 	 */
-	public function update_user_history() {
+	public function update_customer_history( $page_url = '', $timestamp = 0, $referrer = '' ) {
 
-		// Only log good URLs
-		if ( ! is_404() ) {
+		// Grab browsing history from the current session
+		$history = $this->get_customer_history( $referrer );
+		$history[] = array( 'url' => esc_url( $page_url ), 'time' => absint( $timestamp ) );
 
-			// Grab user history from the current session
-			$history = $this->get_user_history();
+		// Push the updated history to the current session
+		$user_hash = EDDUH_Cookie_Helper::get_cookie();
+		edduh_set_page_history( $user_hash, $history );
 
-			// Add the current page to the user's history
-			$protocol  = ( isset( $_SERVER['HTTPS'] ) && 'on' == $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
-			$page_url  = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			$history[] = array( 'url' => $page_url, 'time' => time() );
-
-			// Push the updated history to the current session
-			EDDUH_Cookie_Helper::set_cookie( $history );
-		}
-
-	} /* update_user_history() */
+	} /* update_customer_history() */
 
 	/**
 	 * Save user history as payment meta.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param array $payment_meta Payment meta information.
+	 * @param array $payment_meta EDD Payment meta information.
 	 */
-	public function save_user_history( $payment_meta ) {
+	public function save_customer_history( $payment_meta = array() ) {
 
 		// Bail early if not on the purchase screen
 		// Fixes issue as result of https://github.com/easydigitaldownloads/easy-digital-downloads/issues/5490#issuecomment-283978899
@@ -89,18 +83,18 @@ class EDDUH_Track_History {
 			return $payment_meta;
 		}
 
-		// Grab user history from the current session
-		$user_history = $this->get_user_history();
+		// Grab browsing history from the current session
+		$customer_history = $this->get_customer_history();
 
-		// If user history was captured, sanitize and store the URLs
-		if ( is_array( $user_history ) && ! empty( $user_history ) ) {
+		// If browsing history was captured, sanitize and store the URLs
+		if ( is_array( $customer_history ) && ! empty( $customer_history ) ) {
 
 			// Setup a clean, safe array for the database
 			$sanitized_history = array();
 
 			// Sanitize the referrer a bit differently
 			// than the rest because it may not be a URL.
-			$referrer = array_shift( $user_history );
+			$referrer = array_shift( $customer_history );
 			if ( is_object( $referrer ) ) {
 				$sanitized_history[] = array(
 					'url'  => sanitize_text_field( $referrer->url ),
@@ -109,7 +103,7 @@ class EDDUH_Track_History {
 			}
 
 			// Sanitize each additional URL
-			foreach ( $user_history as $history ) {
+			foreach ( $customer_history as $history ) {
 				$sanitized_history[] = array(
 					'url'  => esc_url_raw( $history->url ),
 					'time' => absint( $history->time ),
@@ -126,14 +120,11 @@ class EDDUH_Track_History {
 			$payment_meta['user_history'] = $sanitized_history;
 			EDDUH_Cookie_Helper::delete_cookie();
 
-		// Otherwise, no history was collected (weird)
-		} else {
-			$payment_meta['user_history'] = __( 'No page history collected.', 'edduh' );
 		}
 
 		return $payment_meta;
 
-	} /* save_user_history() */
+	} /* save_customer_history() */
 
 	/**
 	 * Handle developer debug data.
@@ -152,7 +143,8 @@ class EDDUH_Track_History {
 
 			// Output user history if URL querystring contains 'output=history'
 			if ( isset($_GET['output']) && 'history' == $_GET['output'] ) {
-				echo '<pre>' . print_r( $this->get_user_history(), 1 ) . '</pre>';
+				var_dump( EDDUH_Cookie_Helper::get_cookie() );
+				echo '<pre>' . print_r( $this->get_customer_history(), 1 ) . '</pre>';
 			}
 
 			// Output user history cookie if URL querystring contains 'output=cookie'
@@ -160,9 +152,9 @@ class EDDUH_Track_History {
 				echo '<pre>' . print_r( $_COOKIE, 1 ) . '</pre>';
 			}
 
-			// Clear user_history and dump us back at the homepage if URL querystring contains 'history=reset'
+			// Clear customer history and dump us back at the homepage if URL querystring contains 'history=reset'
 			if ( isset($_GET['history']) && 'reset' == $_GET['history'] ) {
-				EDDUH_Cookie_Helper::delete_cookie();
+				EDDUH_Cookie_Helper::delete_history_data();
 				wp_redirect( site_url() );
 				exit;
 			}
@@ -172,4 +164,4 @@ class EDDUH_Track_History {
 	} /* devmode() */
 
 }
-return new EDDUH_Track_History;
+return new edduh_Track_History;
