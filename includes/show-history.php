@@ -24,28 +24,6 @@ class EDDUH_Show_History {
 	} /* __construct() */
 
 	/**
-	 * Back Compat: Update older single-dimensional history array
-	 * to be multi-dimensional so that we don't break old history.
-	 *
-	 * @since  1.5.0
-	 *
-	 * @param  array $user_history User's browsing history.
-	 * @return array               Potentially updated history array.
-	 */
-	private function normalize_history_array( $user_history ) {
-
-		// If the first item isn't an array, none of them are
-		if ( is_array( $user_history ) && ! is_array( $user_history[0] ) ) {
-			foreach ( $user_history as $key => $url ) {
-				$user_history[ $key ] = array( 'url' => $url, 'time' => 0 );
-			}
-		}
-
-		return $user_history;
-
-	} /* normalize_history_array() */
-
-	/**
 	 * Render "Browsing History" and "Purchase History" metaboxes.
 	 *
 	 * @since 1.5.0
@@ -67,48 +45,43 @@ class EDDUH_Show_History {
 	private function do_meta_box( $title = '', $contents = '' ) {
 		?>
 		<div class="postbox">
-			<div id="normal-sortables" class="meta-box-sortables ui-sortable">
-				<div id="edd-order-data" class="postbox">
-					<h3 class="hndle"><?php echo $title ?></h3>
-					<div class="inside">
-						<?php echo $contents; ?>
-					</div>
-				</div>
+			<h3 class="hndle"><?php echo $title ?></h3>
+			<div class="inside">
+				<?php echo $contents; ?>
 			</div>
 		</div>
 		<?php
 	} /* do_meta_box() */
 
 	/**
-	 * Output user history list for metabox and email.
+	 * Output browsing history for metabox and email.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param object $order Order post object.
+	 * @param int $payment_id Payment post ID.
 	 */
 	public function render_browsing_history( $payment_id = 0 ) {
 
-		// If we don't have an actual order object, bail now
-		if ( empty( $payment_id ) ) {
+		// If we don't have an actual payment ID, bail now
+		if ( ! absint( $payment_id ) ) {
 			return false;
 		}
 
-		// Grab user history
+		// Grab browsing history
 		$payment_meta = edd_get_payment_meta( $payment_id );
-		$user_history = isset( $payment_meta['user_history'] ) ? $this->normalize_history_array( $payment_meta['user_history'] ) : array();
+		$browsing_history = isset( $payment_meta['user_history'] ) ? rzen_edduh_normalize_history_array( $payment_meta['user_history'] ) : array();
 
 		// Initialize output
-		wp_enqueue_style( 'edd-user-history-admin' );
 		$output = '';
 
 		// Explain this table
 		$output .= sprintf( '<p>%s</p>', __( 'Below is every page the customer visited, in order, prior to completing this transaction.', 'edduh' ) );
 
 		// Output user's history (if collected)
-		if ( is_array( $user_history ) && ! empty( $user_history ) ) {
+		if ( is_array( $browsing_history ) && ! empty( $browsing_history ) ) {
 
 			// Strip off the referring URL
-			$referrer = array_shift( $user_history );
+			$referrer = array_shift( $browsing_history );
 
 			// Output the referrer
 			$output .= '<p>';
@@ -122,20 +95,21 @@ class EDDUH_Show_History {
 			}
 
 			// Output full browsing history
-			$output .= '<table style="width:100%; border:1px solid #eee;" cellpadding="0" cellspacing="0" border="0">';
+			$output .= '<table style="width:100%; border:1px solid ' . $this->get_admin_color_scheme()[1] . ';" cellpadding="0" cellspacing="0" border="0">';
 			$output .= '<tr>';
-			$output .= '<th style="background:#333; color:#fff; text-align:left; padding:10px;">' . __( 'URL', 'edduh' ) . '</th>';
-			$output .= '<th style="background:#333; color:#fff; text-align:left; padding:10px;">' . __( 'Timestamp', 'edduh' ) . '</th>';
-			$output .= '<th style="background:#333; color:#fff; text-align:right; padding:10px;">' . __( 'Time on Page', 'edduh' ) . '</th>';
-			$output .= '<th style="background:#333; color:#fff; text-align:right; padding:10px;">' . __( 'Total', 'edduh' ) . '</th>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px; width:55%;">' . __( 'URL', 'edduh' ) . '</th>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px; width:15%;">' . __( 'Timestamp', 'edduh' ) . '</th>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:right; padding:10px; width:15%;">' . __( 'Time elapsed', 'edduh' ) . '</th>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:right; padding:10px; width:15%;">' . __( 'Total', 'edduh' ) . '</th>';
 			$output .= '</tr>';
 
-			foreach ( $user_history as $key => $history ) {
+			foreach ( $browsing_history as $key => $history ) {
 
 				// Don't output the very last item.
 				// This is always the internal 'Order Complete' item.
-				if ( end( $user_history ) == $history )
+				if ( end( $browsing_history ) == $history ) {
 					continue;
+				}
 
 				$alt = $key % 2 ? ' style="background: #f7f7f7;"' : '';
 				$output .= '<tr' . $alt . '>';
@@ -145,7 +119,7 @@ class EDDUH_Show_History {
 				} else {
 					$output .= '<td style="text-align:left; padding:10px;">' . __( 'N/A', 'edduh' ) . '</td>';
 				}
-				$next = isset( $user_history[ $key + 1 ] ) ? $user_history[ $key + 1 ] : end( $user_history );
+				$next = isset( $browsing_history[ $key + 1 ] ) ? $browsing_history[ $key + 1 ] : end( $browsing_history );
 				$output .= '<td style="text-align:right; padding:10px;">' . rzen_edduh_calculate_elapsed_time( $history['time'], $next['time'] ) . '</td>';
 				$output .= '<td style="text-align:right; padding:10px;">' . rzen_edduh_calculate_elapsed_time( $referrer['time'], $next['time'] ) . '</td>';
 				$output .= '</tr>';
@@ -153,7 +127,7 @@ class EDDUH_Show_History {
 			$output .= '</table>';
 
 			// Output total elapsed time
-			$final_entry = end( $user_history );
+			$final_entry = end( $browsing_history );
 			$output .= '<p>';
 			$output .= sprintf( __( '<strong>Total Time Elapsed:</strong> %s', 'edduh' ), rzen_edduh_calculate_elapsed_time( $referrer['time'], $final_entry['time'] ) );
 			$output .= '</p>';
@@ -173,16 +147,16 @@ class EDDUH_Show_History {
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param object $order Order post object.
+	 * @param int $payment_id Payment post ID.
 	 */
 	public function render_purchase_history( $payment_id = 0 ) {
 
-		// If no order object is available, bail here
-		if ( empty( $payment_id ) ) {
+		// If we don't have an actual payment ID, bail now
+		if ( ! absint( $payment_id ) ) {
 			return false;
 		}
 
-		// Get relevant payment details
+		// Grab payment details
 		$payment_meta = edd_get_payment_meta( $payment_id );
 
 		// Setup important variables
@@ -194,7 +168,7 @@ class EDDUH_Show_History {
 			'post_type'   => 'edd_payment',
 			'order'       => 'ASC',
 			'post_status' => 'any',
-			) );
+		) );
 
 		// Initialize output
 		$output = '';
@@ -205,18 +179,20 @@ class EDDUH_Show_History {
 		$output .= sprintf( '<p>%s</p>', __( 'Below is every order this customer has completed, including this one (highlighted).', 'edduh' ) );
 
 		// Output purhcase history table
-		$output .= '<table style="width:100%; border:1px solid #eee;" cellpadding="0" cellspacing="0" border="0">';
+		$output .= '<table style="width:100%; border:1px solid ' . $this->get_admin_color_scheme()[1] . ';" cellpadding="0" cellspacing="0" border="0">';
 		$output .= '<tr>';
-		$output .= '<th style="background:#333; color:#fff; text-align:left; padding:10px;">' . __( 'Order Number', 'edduh' ) . '</th>';
-		$output .= '<th style="background:#333; color:#fff; text-align:left; padding:10px;">' . __( 'Order Date', 'edduh' ) . '</th>';
-		$output .= '<th style="background:#333; color:#fff; text-align:left; padding:10px;">' . __( 'Order Status', 'edduh' ) . '</th>';
-		$output .= '<th style="background:#333; color:#fff; text-align: right; padding:10px;">' . __( 'Order Total', 'edduh' ) . '</th>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px;">' . __( 'Order Number', 'edduh' ) . '</th>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px;">' . __( 'Order Date', 'edduh' ) . '</th>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px;">' . __( 'Order Status', 'edduh' ) . '</th>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align: right; padding:10px;">' . __( 'Order Total', 'edduh' ) . '</th>';
 		$output .= '</tr>';
+
 		if ( ! empty( $payments ) ) {
-			foreach ($payments as $key => $payment ) {
+			foreach ( $payments as $key => $payment ) {
 				$payment = get_post( $payment->ID );
 				$alt = $key % 2 ? ' style="background: #f7f7f7;"' : '';
 				$current = $payment->ID == $payment_id ? ' style="background: #ffc; font-weight: bold"' : $alt;
+
 				$output .= '<tr' . $current . '>';
 				$output .= '<td style="text-align:left; padding:10px;">' . ( $key + 1 ) . '. <a href="' . admin_url( "edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id={$payment->ID}" ) . '">' . sprintf( __( 'Order %1$s', 'edduh' ), edd_get_payment_number( $payment->ID ) ) . '</a></td>';
 				$output .= '<td style="text-align:left; padding:10px;">' . date('Y-m-d h:ia', strtotime( $payment->post_date ) ) . '</td>';
@@ -229,11 +205,12 @@ class EDDUH_Show_History {
 				}
 			}
 		}
+
 		$output .= '</table>';
 
 		// Output total lifetime value
 		$output .= '<p>';
-		$output .= sprintf( __( '<strong>Actual Lifetime Customer Value:</strong> %s', 'edduh' ), '<span style="color:#7EB03B; font-size: 1.2em;">' . edd_currency_filter( edd_format_amount( $lifetime_total ) ) . '</span>' );
+		$output .= sprintf( __( '<strong>Actual Lifetime Customer Value:</strong> %s', 'edduh' ), '<span style="color:#7EB03B; font-size:1.2em; font-weight:bold;">' . edd_currency_filter( edd_format_amount( $lifetime_total ) ) . '</span>' );
 		$output .= '</p>';
 
 		// Close out the container
@@ -242,6 +219,26 @@ class EDDUH_Show_History {
 		return $output;
 
 	} /* render_purchase_history() */
+
+	/**
+	 * Get current user's admin color scheme.
+	 *
+	 * @since  x.x.x
+	 *
+	 * @return array Hexadecimal colors.
+	 */
+	public function get_admin_color_scheme() {
+		global $_wp_admin_css_colors;
+
+		$color_scheme = sanitize_html_class( get_user_option( 'admin_color' ), 'fresh' );
+
+		// It's possible to have a color scheme set that is no longer registered.
+		if ( empty( $_wp_admin_css_colors[ $color_scheme ] ) ) {
+			$color_scheme = 'fresh';
+		}
+
+		return $_wp_admin_css_colors[ $color_scheme ]->colors;
+	}
 
 	/**
 	 * Register custom email tags.
