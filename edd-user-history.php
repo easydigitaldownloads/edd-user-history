@@ -58,43 +58,9 @@ class EDD_User_History {
 		// Basic setup
 		add_action( 'admin_notices', array( $this, 'maybe_disable_plugin' ) );
 		add_action( 'admin_init', array( $this, 'licensed_updates' ), 9 );
-		add_action( 'plugins_loaded', array( $this, 'i18n' ) );
 		add_action( 'plugins_loaded', array( $this, 'includes' ) );
 
 	} /* __construct() */
-
-	/**
-	 * Load localization.
-	 *
-	 * @since 1.5.0
-	 */
-	public function i18n() {
-		load_plugin_textdomain( 'edduh', false, $this->directory_path . '/languages/' );
-
-		// Set filter for plugin's languages directory
-		$edduh_lang_dir = $this->directory_path . '/languages/';
-		$edduh_lang_dir = apply_filters( 'edduh_languages_directory', $edduh_lang_dir );
-
-		// Traditional WordPress plugin locale filter
-		$locale        = apply_filters( 'plugin_locale',  get_locale(), 'edduh' );
-		$mofile        = sprintf( '%1$s-%2$s.mo', 'edduh', $locale );
-
-		// Setup paths to current locale file
-		$mofile_local  = $edduh_lang_dir . $mofile;
-		$mofile_global = WP_LANG_DIR . '/edd/' . $mofile;
-
-		if ( file_exists( $mofile_global ) ) {
-			// Look in global /wp-content/languages/edduh folder
-			load_textdomain( 'edduh', $mofile_global );
-		} elseif ( file_exists( $mofile_local ) ) {
-			// Look in local /wp-content/plugins/easy-digital-downloads/languages/ folder
-			load_textdomain( 'edduh', $mofile_local );
-		} else {
-			// Load the default language files
-			load_plugin_textdomain( 'edduh', false, $edduh_lang_dir );
-		}
-
-	} /* i18n() */
 
 	/**
 	 * Include file dependencies.
