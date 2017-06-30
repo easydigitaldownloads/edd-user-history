@@ -36,6 +36,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 class EDD_User_History {
 
 	/**
+	 * Tracks current plugin version throughout codebase.
+	 *
+	 * @since x.x.x
+	 * @var string
+	 */
+	var $version = '1.5.2';
+
+	/**
 	 * Fire up the engines.
 	 *
 	 * @since 1.0.0
@@ -109,7 +117,7 @@ class EDD_User_History {
 	 */
 	public function licensed_updates() {
 		if ( class_exists( 'EDD_License' ) ) {
-			$license = new EDD_License( __FILE__, 'User History', '1.5.2', 'Brian Richards' );
+			$license = new EDD_License( __FILE__, 'User History', $this->version, 'Brian Richards' );
 		}
 	} /* licensed_updates() */
 
