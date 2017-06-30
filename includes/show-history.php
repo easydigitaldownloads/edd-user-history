@@ -223,7 +223,7 @@ class EDDUH_Show_History {
 	/**
 	 * Get current user's admin color scheme.
 	 *
-	 * @since  x.x.x
+	 * @since  1.6.0
 	 *
 	 * @return array Hexadecimal colors.
 	 */

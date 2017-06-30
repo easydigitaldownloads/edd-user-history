@@ -3,7 +3,7 @@
 /**
  * AJAX Helper to track user history.
  *
- * @since x.x.x
+ * @since 1.6.0
  */
 function edduh_ajax_track_history() {
 

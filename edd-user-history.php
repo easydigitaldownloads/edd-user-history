@@ -3,7 +3,7 @@
  * Plugin Name: Easy Digital Downloads User History
  * Plugin URI: http://easydigitaldownloads.com/extensions/
  * Description: Track and store customer browsing history with their order.
- * Version: 1.5.2
+ * Version: 1.6.0
  * Author: Brian Richards
  * Author URI: http://rzen.net
  * License: GPL2
@@ -42,7 +42,7 @@ class EDD_User_History {
 	/**
 	 * Track instance of the EDD_User_History class.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 * @var string
 	 */
 	protected static $_instance = null;
@@ -50,10 +50,10 @@ class EDD_User_History {
 	/**
 	 * Tracks current plugin version throughout codebase.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 * @var string
 	 */
-	var $version = '1.5.2';
+	var $version = '1.6.0';
 
 	/**
 	 * Main EDD_User_History Instance
@@ -114,7 +114,7 @@ class EDD_User_History {
 	/**
 	 * Plugin activation hook.
 	 *
-	 * @since  x.x.x
+	 * @since  1.6.0
 	 */
 	public function activation() {
 		$this->includes();
@@ -124,7 +124,7 @@ class EDD_User_History {
 	/**
 	 * Plugin deactivation hook.
 	 *
-	 * @since  x.x.x
+	 * @since  1.6.0
 	 */
 	public function deactivation() {
 		$this->includes();
@@ -160,7 +160,7 @@ class EDD_User_History {
 	/**
 	 * Register JS files.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 */
 	public function load_scripts() {
 		wp_enqueue_script( 'edduh-tracking', $this->directory_url . 'assets/js/tracking.js', array( 'jquery' ), '1.2.0' );
@@ -205,7 +205,7 @@ class EDD_User_History {
 	/**
 	 * Run an update routine for the plugin.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 */
 	function maybe_update_plugin() {
 
@@ -230,7 +230,7 @@ class EDD_User_History {
 /**
  * Returns the main instance of edduh.
  *
- * @since  x.x.x
+ * @since  1.6.0
  * @return WooCommerce
  */
 function edd_user_history() {

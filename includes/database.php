@@ -9,7 +9,7 @@
  *
  * See https://codex.wordpress.org/Creating_Tables_with_Plugins#Creating_or_Updating_the_Table
  *
- * @since x.x.x
+ * @since 1.6.0
  */
 function edduh_setup_custom_table() {
 	global $wpdb;
@@ -34,7 +34,7 @@ add_action( 'edduh_plugin_update', 'edduh_setup_custom_table' );
  *
  * Hooked to plugin activation.
  *
- * @since x.x.x
+ * @since 1.6.0
  */
 function edduh_schedule_garbage_collection() {
 	if ( ! wp_next_scheduled( 'edduh_garbage_collection' ) ) {
@@ -46,7 +46,7 @@ function edduh_schedule_garbage_collection() {
  * Clear scheduled garbage collection.
  * Hooked to plugin deactivation.
  *
- * @since x.x.x
+ * @since 1.6.0
  */
 function edduh_unschedule_garbage_collection() {
 	wp_clear_scheduled_hook( 'edduh_garbage_collection' );
@@ -55,7 +55,7 @@ function edduh_unschedule_garbage_collection() {
 /**
  * Delete any stored history that is greater than 1 week old.
  *
- * @since x.x.x
+ * @since 1.6.0
  */
 function edduh_garbage_collection() {
 	global $wpdb;
@@ -72,7 +72,7 @@ add_action( 'edduh_garbage_collection', 'edduh_garbage_collection' );
 /**
  * Get a user's page history.
  *
- * @since  x.x.x
+ * @since  1.6.0
  *
  * @param  string $user_hash User hash.
  * @return array             Page history (or empty array).
@@ -97,7 +97,7 @@ function edduh_get_page_history( $user_hash = '' ) {
 /**
  * Store user's history to database.
  *
- * @since x.x.x
+ * @since 1.6.0
  *
  * @param string $user_hash    User hash.
  * @param array  $page_history Browsing history.
@@ -122,7 +122,7 @@ function edduh_set_page_history( $user_hash = '', $page_history = array() ) {
 /**
  * Delete a user's page history.
  *
- * @since x.x.x
+ * @since 1.6.0
  *
  * @param string $user_hash User hash.
  */

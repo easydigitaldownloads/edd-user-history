@@ -5,7 +5,7 @@ class EDDUH_Cookie_Helper {
 	/**
 	 * Tracking cookie name.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 * @var string
 	 */
 	static $cookie_name = 'edduh_hash';
@@ -13,7 +13,7 @@ class EDDUH_Cookie_Helper {
 	/**
 	 * Tracking cookie duration.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 * @var string
 	 */
 	static $expiration_length = 604800; // 7 Days
