@@ -45,7 +45,7 @@ class EDD_User_History {
 	 * @since 1.6.0
 	 * @var string
 	 */
-	protected static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Tracks current plugin version throughout codebase.
@@ -65,11 +65,17 @@ class EDD_User_History {
 	 * @return EDD_User_History - Main instance
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof EDD_User_History ) ) {
+			self::$instance = new EDD_User_History();
+			self::$instance->i18n();
+			self::$instance->includes();
+			self::$instance->maybe_update_plugin();
+
+			new EDDUH_Show_History;
+			new EDDUH_Track_History;
 		}
 
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -92,11 +98,8 @@ class EDD_User_History {
 		register_deactivation_hook( $this->plugin_file, array( $this, 'deactivation' ) );
 
 		// Basic setup
-		add_action( 'plugins_loaded', array( $this, 'i18n' ) );
-		add_action( 'plugins_loaded', array( $this, 'includes' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_disable_plugin' ) );
-		add_action( 'plugins_loaded', array( $this, 'maybe_update_plugin' ) );
 	}
 
 	/**
@@ -150,8 +153,8 @@ class EDD_User_History {
 			require_once( $this->directory_path . 'includes/database.php' );
 			require_once( $this->directory_path . 'includes/ajax.php' );
 			require_once( $this->directory_path . 'includes/class-cookie-helper.php' );
-			require_once( $this->directory_path . 'includes/track-history.php' );
-			require_once( $this->directory_path . 'includes/show-history.php' );
+			require_once( $this->directory_path . 'includes/class-track-history.php' );
+			require_once( $this->directory_path . 'includes/class-show-history.php' );
 		}
 	}
 

@@ -157,5 +157,3 @@ class EDDUH_Track_History {
 		}
 	}
 }
-
-return new EDDUH_Track_History;
