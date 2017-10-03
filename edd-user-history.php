@@ -68,6 +68,7 @@ class EDD_User_History {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}
+
 		return self::$_instance;
 	}
 
@@ -165,7 +166,7 @@ class EDD_User_History {
 	public function load_scripts() {
 		wp_enqueue_script( 'edduh-tracking', $this->directory_url . 'assets/js/tracking.js', array( 'jquery' ), '1.2.0' );
 		wp_localize_script( 'edduh-tracking', 'edduh', array(
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 			'currentUrl' => home_url( add_query_arg( null, null ) ),
 		) );
 	}
@@ -228,7 +229,7 @@ class EDD_User_History {
 }
 
 /**
- * Returns the main instance of edduh.
+ * Returns the main instance of EDD_User_History.
  *
  * @since  1.6.0
  * @return EDD_User_History
@@ -236,4 +237,5 @@ class EDD_User_History {
 function edd_user_history() {
 	return EDD_User_History::instance();
 }
+
 edd_user_history();
