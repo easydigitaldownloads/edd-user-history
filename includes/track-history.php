@@ -24,7 +24,6 @@ class EDDUH_Track_History {
 
 		// Uncomment the following action to enable devmode
 		// add_action( 'get_header', array( $this, 'devmode' ) );
-
 	}
 
 	/**
@@ -135,7 +134,7 @@ class EDDUH_Track_History {
 	 */
 	public function devmode() {
 		// Only proceed if URL querystring cotnains "devmode=true"
-		if ( isset( $_GET['devmode'] ) && 'true' == $_GET['devmode'] ) {
+		if ( defined( 'EDD_DEBUG' ) && EDD_DEBUG && isset( $_GET['devmode'] ) && 'true' == $_GET['devmode'] ) {
 
 			// Output user history if URL querystring contains 'output=history'
 			if ( isset( $_GET['output'] ) && 'history' == $_GET['output'] ) {
