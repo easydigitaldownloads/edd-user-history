@@ -234,7 +234,10 @@ class EDD_User_History {
  * @return EDD_User_History
  */
 function edd_user_history() {
+	if ( ! class_exists( 'Easy_Digital_Downloads' ) ) {
+		return null;
+	}
+
 	return EDD_User_History::instance();
 }
-
-edd_user_history();
+add_action( 'plugins_loaded', 'edd_user_history', 10 );
