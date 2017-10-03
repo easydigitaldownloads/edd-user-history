@@ -151,10 +151,9 @@ class EDD_User_History {
 			require_once( $this->directory_path . 'includes/utilities.php' );
 			require_once( $this->directory_path . 'includes/database.php' );
 			require_once( $this->directory_path . 'includes/ajax.php' );
-			require_once( $this->directory_path . 'includes/class.EDDUH_Cookie_Helper.php' );
+			require_once( $this->directory_path . 'includes/class-cookie-helper.php' );
 			require_once( $this->directory_path . 'includes/track-history.php' );
 			require_once( $this->directory_path . 'includes/show-history.php' );
-			require_once( $this->directory_path . 'includes/settings.php' );
 		}
 	} /* includes() */
 
