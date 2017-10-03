@@ -21,7 +21,7 @@ function edduh_setup_custom_table() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 	$sql = "
-		CREATE TABLE {$wpdb->prefix}edduh_page_history (
+		CREATE TABLE {$wpdb->prefix}edd_uh_page_history (
 			user_hash varchar(32) NOT NULL,
 			page_history longtext,
 			last_updated timestamp NOT NULL,
@@ -69,7 +69,7 @@ function edduh_unschedule_garbage_collection() {
 function edduh_garbage_collection() {
 	global $wpdb;
 	$wpdb->query( $wpdb->prepare( "
-		DELETE FROM {$wpdb->prefix}edduh_page_history
+		DELETE FROM {$wpdb->prefix}edd_uh_page_history
 		WHERE last_updated <= %s
 		", date( 'Y-m-d H:i:s', time( '-1 week' ) ) ) );
 }
@@ -89,7 +89,7 @@ function edduh_get_page_history( $user_hash = '' ) {
 
 	$result = $wpdb->get_var( $wpdb->prepare( "
 		SELECT page_history
-		FROM {$wpdb->prefix}edduh_page_history
+		FROM {$wpdb->prefix}edd_uh_page_history
 		WHERE user_hash = %s
 		", $user_hash ) );
 
@@ -108,7 +108,7 @@ function edduh_get_page_history( $user_hash = '' ) {
  */
 function edduh_set_page_history( $user_hash = '', $page_history = array() ) {
 	global $wpdb;
-	$wpdb->replace( $wpdb->prefix . 'edduh_page_history', array(
+	$wpdb->replace( $wpdb->prefix . 'edd_uh_page_history', array(
 		'user_hash'    => $user_hash,
 		'page_history' => json_encode( $page_history ),
 		'last_updated' => date( 'Y-m-d H:i:s' ),
@@ -128,5 +128,5 @@ function edduh_set_page_history( $user_hash = '', $page_history = array() ) {
  */
 function edduh_delete_page_history( $user_hash = '' ) {
 	global $wpdb;
-	$wpdb->delete( $wpdb->prefix . 'edduh_page_history', array( 'user_hash' => $user_hash ), array( '%s' ) );
+	$wpdb->delete( $wpdb->prefix . 'edd_uh_page_history', array( 'user_hash' => $user_hash ), array( '%s' ) );
 }
