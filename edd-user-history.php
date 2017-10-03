@@ -1,18 +1,18 @@
 <?php
 /**
- * Plugin Name: Easy Digital Downloads User History
- * Plugin URI: http://easydigitaldownloads.com/extensions/
+ * Plugin Name: Easy Digital Downloads - User History
+ * Plugin URI: http://easydigitaldownloads.com/downloads/user-history
  * Description: Track and store customer browsing history with their order.
  * Version: 1.6.0
- * Author: Brian Richards
- * Author URI: http://rzen.net
+ * Author: Easy Digital Downloads
+ * Author URI: https://easydigitaldownloads.com
  * License: GPL2
  * Text Domain: edduh
  * Domain Path: languages
  */
 
 /*
-Copyright 2013 rzen Media, LLC (email : brian@rzen.net)
+Copyright 2017 Easy Digital Downloads, LLC
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -107,7 +107,7 @@ class EDD_User_History {
 	 */
 	public function licensed_updates() {
 		if ( class_exists( 'EDD_License' ) ) {
-			$license = new EDD_License( __FILE__, 'User History', $this->version, 'Brian Richards' );
+			$license = new EDD_License( __FILE__, 'User History', $this->version, 'EDD Team' );
 		}
 	} /* licensed_updates() */
 
@@ -231,7 +231,7 @@ class EDD_User_History {
  * Returns the main instance of edduh.
  *
  * @since  1.6.0
- * @return WooCommerce
+ * @return EDD_User_History
  */
 function edd_user_history() {
 	return EDD_User_History::instance();

@@ -17,7 +17,6 @@ class EDDUH_Track_History {
 	 */
 	public function __construct() {
 
-		// Connect to WooCommerce
 		add_action( 'edduh_visited_url', array( $this, 'update_customer_history' ), 10, 3 );
 		add_action( 'edd_payment_meta', array( $this, 'save_customer_history' ) );
 
@@ -30,6 +29,8 @@ class EDDUH_Track_History {
 	 * Get customer's tracked browsing history.
 	 *
 	 * @since 1.5.0
+	 *
+	 * @referrer string The Referrer for ths user
 	 */
 	private function get_customer_history( $referrer = '' ) {
 
@@ -44,7 +45,7 @@ class EDDUH_Track_History {
 		} else {
 			$referrer = esc_url( $referrer )
 				? $referrer
-				: __( 'Direct Traffic', 'woocommerce-customer-history' );
+				: __( 'Direct Traffic', 'edduh' );
 
 			return array( array( 'url' => $referrer, 'time' => time() ) );
 		}
@@ -59,7 +60,7 @@ class EDDUH_Track_History {
 	public function update_customer_history( $page_url = '', $timestamp = 0, $referrer = '' ) {
 
 		// Grab browsing history from the current session
-		$history = $this->get_customer_history( $referrer );
+		$history   = $this->get_customer_history( $referrer );
 		$history[] = array( 'url' => esc_url( $page_url ), 'time' => absint( $timestamp ) );
 
 		// Push the updated history to the current session
@@ -73,7 +74,8 @@ class EDDUH_Track_History {
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param array $payment_meta EDD Payment meta information.
+	 * @param  array $payment_meta EDD Payment meta information.
+	 * @return array $payment_meta
 	 */
 	public function save_customer_history( $payment_meta = array() ) {
 

@@ -18,14 +18,19 @@ function edduh_setup_custom_table() {
 
 	$sql = "
 		CREATE TABLE {$wpdb->prefix}edduh_page_history (
-			user_hash varchar(23) NOT NULL,
+			user_hash varchar(32) NOT NULL,
 			page_history longtext,
 			last_updated timestamp NOT NULL,
 			PRIMARY KEY  (user_hash)
 		);
 		";
 
-	dbDelta( $sql );
+	// If WP_DEBUG is defined, show an error message, otherwise let's swallow any errors
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		dbDelta( $sql );
+	} else {
+		@dbDelta( $sql );
+	}
 }
 add_action( 'edduh_plugin_update', 'edduh_setup_custom_table' );
 
@@ -107,7 +112,7 @@ function edduh_set_page_history( $user_hash = '', $page_history = array() ) {
 	$wpdb->replace(
 		$wpdb->prefix . 'edduh_page_history',
 		array(
-			'user_hash' => $user_hash,
+			'user_hash'    => $user_hash,
 			'page_history' => json_encode( $page_history ),
 			'last_updated' => date( 'Y-m-d H:i:s' ),
 		),

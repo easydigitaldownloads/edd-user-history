@@ -26,7 +26,7 @@ class EDDUH_Cookie_Helper {
 	 * @return string User's unique hash.
 	 */
 	public static function set_cookie() {
-		$hash = uniqid();
+		$hash = wp_hash( uniqid(), 'nonce' );
 		setcookie( self::$cookie_name, $hash, time() + self::$expiration_length, '/' );
 		return $hash;
 	}
@@ -39,9 +39,15 @@ class EDDUH_Cookie_Helper {
 	 * @return string User's unique hash.
 	 */
 	public static function get_cookie() {
-		return isset( $_COOKIE[ self::$cookie_name ] ) && ! empty( $_COOKIE[ self::$cookie_name ] )
-			? esc_attr( $_COOKIE[ self::$cookie_name ] )
+		$cookie_value = isset( $_COOKIE[ self::$cookie_name ] ) && ! empty( $_COOKIE[ self::$cookie_name ] )
+			? $_COOKIE[ self::$cookie_name ]
 			: self::set_cookie();
+
+		if ( ! ctype_alnum( $cookie_value ) ) {
+			$cookie_value = self::set_cookie();
+		}
+
+		return $cookie_value;
 	}
 
 	/**
