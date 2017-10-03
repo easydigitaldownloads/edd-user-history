@@ -60,13 +60,13 @@ function rzen_edduh_calculate_elapsed_time( $original_time = 0, $new_time = 0 ) 
 
 	// Output progressive amounts of detail
 	if ( MINUTE_IN_SECONDS >= $elapsed_time ) {
-		return sprintf( __( '%1$02ds', 'edduh' ), $elapsed_time % 60 );
+		return sprintf( _x( '%1$02ds', 'Number of seconds since elapsed time', 'edduh' ), $elapsed_time % 60 );
 	} elseif ( HOUR_IN_SECONDS >= $elapsed_time ) {
-		return sprintf( __( '%1$02dm %2$02ds', 'edduh' ), floor( $elapsed_time / MINUTE_IN_SECONDS % 60 ), $elapsed_time % 60 );
+		return sprintf( _x( '%1$02dm %2$02ds', 'Number of minutes and seconds since elapsed time', 'edduh' ), floor( $elapsed_time / MINUTE_IN_SECONDS % 60 ), $elapsed_time % 60 );
 	} elseif ( DAY_IN_SECONDS >= $elapsed_time ) {
-		return sprintf( __( '%1$02dh %2$02dm %3$02ds', 'edduh' ), floor( $elapsed_time / HOUR_IN_SECONDS ), floor( $elapsed_time / MINUTE_IN_SECONDS % 60 ), $elapsed_time % 60 );
+		return sprintf( _x( '%1$02dh %2$02dm %3$02ds', 'Number of hours, minutes, and seconds since elapsed time', 'edduh' ), floor( $elapsed_time / HOUR_IN_SECONDS ), floor( $elapsed_time / MINUTE_IN_SECONDS % 60 ), $elapsed_time % 60 );
 	} else {
-		return sprintf( __( '%1$d:%2$02d:%3$02d:%4$02d', 'edduh' ), floor( $elapsed_time / DAY_IN_SECONDS ), floor( $elapsed_time / HOUR_IN_SECONDS % 24 ), floor( $elapsed_time / MINUTE_IN_SECONDS % 60 ), $elapsed_time % 60 );
+		return sprintf( _x( '%1$d:%2$02d:%3$02d:%4$02d', 'Number of days, hours, minutes, and seconds since elapsed time', 'edduh' ), floor( $elapsed_time / DAY_IN_SECONDS ), floor( $elapsed_time / HOUR_IN_SECONDS % 24 ), floor( $elapsed_time / MINUTE_IN_SECONDS % 60 ), $elapsed_time % 60 );
 	}
 }
 

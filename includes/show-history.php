@@ -6,10 +6,6 @@
  * @author  Easy Digital Downloads, LLC
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 class EDDUH_Show_History {
 
 	/**

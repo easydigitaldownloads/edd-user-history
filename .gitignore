@@ -1,36 +1,30 @@
-node_modules/
-vendor/
-*.zip
-*.tar.gz
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
 
-# Created by https://www.gitignore.io/api/osx
+# Folder config file
+Desktop.ini
 
-### OSX ###
-*.DS_Store
-.AppleDouble
-.LSOverride
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
 
-# Icon must end with two \r
-Icon
+# Mac crap
+.DS_Store
 
+# Sublime
+*.sublime-project
+*.sublime-workspace
 
-# Thumbnails
-._*
+# PhpStorm
+.idea/
 
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
+# Eclipse
+*.pydevproject
+.project
+.metadata
 
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-# End of https://www.gitignore.io/api/osx
+# Package managers
+/node_modules/
+/vendor/
+composer.lock
+/build/

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Easy Digital Downloads - User History
- * Plugin URI: http://easydigitaldownloads.com/downloads/user-history
+ * Plugin URI: https://easydigitaldownloads.com/downloads/user-history
  * Description: Track and store customer browsing history with their order.
  * Version: 1.6.0
  * Author: Easy Digital Downloads
@@ -78,7 +78,6 @@ class EDD_User_History {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-
 		// Define plugin constants
 		$this->plugin_file    = __FILE__;
 		$this->basename       = plugin_basename( $this->plugin_file );
@@ -98,7 +97,6 @@ class EDD_User_History {
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_disable_plugin' ) );
 		add_action( 'plugins_loaded', array( $this, 'maybe_update_plugin' ) );
-
 	}
 
 	/**
@@ -110,7 +108,7 @@ class EDD_User_History {
 		if ( class_exists( 'EDD_License' ) ) {
 			$license = new EDD_License( __FILE__, 'User History', $this->version, 'EDD Team' );
 		}
-	} /* licensed_updates() */
+	}
 
 	/**
 	 * Plugin activation hook.
@@ -139,7 +137,7 @@ class EDD_User_History {
 	 */
 	public function i18n() {
 		load_plugin_textdomain( 'edduh', false, $this->directory_path . '/languages/' );
-	} /* i18n() */
+	}
 
 	/**
 	 * Include file dependencies.
@@ -155,7 +153,7 @@ class EDD_User_History {
 			require_once( $this->directory_path . 'includes/track-history.php' );
 			require_once( $this->directory_path . 'includes/show-history.php' );
 		}
-	} /* includes() */
+	}
 
 	/**
 	 * Register JS files.
@@ -178,7 +176,6 @@ class EDD_User_History {
 	 * @since 1.0.0
 	 */
 	public function maybe_disable_plugin() {
-
 		if ( ! $this->meets_requirements() ) {
 			// Display our error
 			echo '<div id="message" class="error">';
@@ -188,8 +185,7 @@ class EDD_User_History {
 			// Deactivate our plugin
 			deactivate_plugins( $this->basename );
 		}
-
-	} /* maybe_disable_plugin() */
+	}
 
 	/**
 	 * Check if all plugin requirements are met.
@@ -200,7 +196,7 @@ class EDD_User_History {
 	 */
 	private function meets_requirements() {
 		return ( function_exists( 'EDD' ) && defined( 'EDD_VERSION' ) && version_compare( EDD_VERSION, '1.9.0', '>=' ) );
-	} /* meets_requirements() */
+	}
 
 	/**
 	 * Run an update routine for the plugin.
@@ -208,7 +204,6 @@ class EDD_User_History {
 	 * @since 1.6.0
 	 */
 	function maybe_update_plugin() {
-
 		// Bail early if not on an admin page
 		if ( ! is_admin() ) {
 			return;
@@ -223,8 +218,7 @@ class EDD_User_History {
 			do_action( 'edduh_plugin_update', $stored_db_version, $this->version );
 			update_option( 'edduh_plugin_db_version', $this->version );
 		}
-
-	} /* maybe_update_plugin() */
+	}
 }
 
 /**
@@ -240,5 +234,4 @@ function edd_user_history() {
 
 	return EDD_User_History::instance();
 }
-
 add_action( 'plugins_loaded', 'edd_user_history', 10 );
