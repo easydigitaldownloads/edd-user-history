@@ -68,7 +68,7 @@ class EDDUH_Cookie_Helper {
 	 * @since 1.1.0
 	 */
 	public static function delete_history_data() {
-		wcch_delete_page_history( self::get_cookie() );
+		edduh_delete_page_history( self::get_cookie() );
 		self::delete_cookie();
 	}
 }

@@ -240,4 +240,5 @@ function edd_user_history() {
 
 	return EDD_User_History::instance();
 }
+
 add_action( 'plugins_loaded', 'edd_user_history', 10 );
