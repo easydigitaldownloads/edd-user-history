@@ -6,10 +6,10 @@ User History for Easy Digital Downloads is a commercial plugin available from [h
 If you find an issue, let us know [here](https://github.com/easydigitaldownloads/edd-user-history/issues?state=open)!
 
 ## Support ##
-This is a developer's portal for Amazon S3 and should _not_ be used for support. Please visit the [support page](https://easydigitaldownloads.com/support).
+This is a developer's portal for User History and should _not_ be used for support. Please visit the [support page](https://easydigitaldownloads.com/support).
 
 ## Contributions ##
-Anyone is welcome to contribute to Free Downloads. Please read the [guidelines for contributing](https://github.com/easydigitaldownloads/edd-user-history/blob/master/.github/CONTRIBUTING.md) to this repository.
+Anyone is welcome to contribute to User History. Please read the [guidelines for contributing](https://github.com/easydigitaldownloads/edd-user-history/blob/master/.github/CONTRIBUTING.md) to this repository.
 
 There are various ways you can contribute:
 
