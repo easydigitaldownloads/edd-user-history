@@ -12,13 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param  string $old_version Previous plugin version.
  * @param  string $new_version Current plugin version.
  */
-function wcch_plugin_update_1_6_0( $old_version, $new_version ) {
-
+function edduh_plugin_update_1_6_0( $old_version, $new_version ) {
 	if ( '1.6.0' === $new_version ) {
 		// kickstart garbage collection
 		edd_user_history()->deactivation();
 		edd_user_history()->activation();
 	}
-
 }
-add_action( 'wcch_plugin_update', 'wcch_plugin_update_1_6_0', 10, 2 );
+add_action( 'edduh_plugin_update', 'edduh_plugin_update_1_6_0', 10, 2 );

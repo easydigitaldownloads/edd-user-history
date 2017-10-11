@@ -1,18 +1,18 @@
 <?php
 /**
- * Plugin Name: Easy Digital Downloads User History
- * Plugin URI: http://easydigitaldownloads.com/extensions/
+ * Plugin Name: Easy Digital Downloads - User History
+ * Plugin URI: https://easydigitaldownloads.com/downloads/user-history
  * Description: Track and store customer browsing history with their order.
  * Version: 1.6.0
- * Author: Brian Richards
- * Author URI: http://rzen.net
+ * Author: Easy Digital Downloads
+ * Author URI: https://easydigitaldownloads.com
  * License: GPL2
  * Text Domain: edduh
  * Domain Path: languages
  */
 
 /*
-Copyright 2013 rzen Media, LLC (email : brian@rzen.net)
+Copyright 2017 Easy Digital Downloads, LLC
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -45,7 +45,7 @@ class EDD_User_History {
 	 * @since 1.6.0
 	 * @var string
 	 */
-	protected static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Tracks current plugin version throughout codebase.
@@ -65,10 +65,17 @@ class EDD_User_History {
 	 * @return EDD_User_History - Main instance
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof EDD_User_History ) ) {
+			self::$instance = new EDD_User_History();
+			self::$instance->i18n();
+			self::$instance->includes();
+			self::$instance->maybe_update_plugin();
+
+			new EDDUH_Show_History;
+			new EDDUH_Track_History;
 		}
-		return self::$_instance;
+
+		return self::$instance;
 	}
 
 	/**
@@ -77,7 +84,6 @@ class EDD_User_History {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-
 		// Define plugin constants
 		$this->plugin_file    = __FILE__;
 		$this->basename       = plugin_basename( $this->plugin_file );
@@ -92,12 +98,8 @@ class EDD_User_History {
 		register_deactivation_hook( $this->plugin_file, array( $this, 'deactivation' ) );
 
 		// Basic setup
-		add_action( 'plugins_loaded', array( $this, 'i18n' ) );
-		add_action( 'plugins_loaded', array( $this, 'includes' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_disable_plugin' ) );
-		add_action( 'plugins_loaded', array( $this, 'maybe_update_plugin' ) );
-
 	}
 
 	/**
@@ -107,9 +109,9 @@ class EDD_User_History {
 	 */
 	public function licensed_updates() {
 		if ( class_exists( 'EDD_License' ) ) {
-			$license = new EDD_License( __FILE__, 'User History', $this->version, 'Brian Richards' );
+			$license = new EDD_License( __FILE__, 'User History', $this->version, 'EDD Team' );
 		}
-	} /* licensed_updates() */
+	}
 
 	/**
 	 * Plugin activation hook.
@@ -138,7 +140,7 @@ class EDD_User_History {
 	 */
 	public function i18n() {
 		load_plugin_textdomain( 'edduh', false, $this->directory_path . '/languages/' );
-	} /* i18n() */
+	}
 
 	/**
 	 * Include file dependencies.
@@ -150,12 +152,11 @@ class EDD_User_History {
 			require_once( $this->directory_path . 'includes/utilities.php' );
 			require_once( $this->directory_path . 'includes/database.php' );
 			require_once( $this->directory_path . 'includes/ajax.php' );
-			require_once( $this->directory_path . 'includes/class.EDDUH_Cookie_Helper.php' );
-			require_once( $this->directory_path . 'includes/track-history.php' );
-			require_once( $this->directory_path . 'includes/show-history.php' );
-			require_once( $this->directory_path . 'includes/settings.php' );
+			require_once( $this->directory_path . 'includes/class-cookie-helper.php' );
+			require_once( $this->directory_path . 'includes/class-track-history.php' );
+			require_once( $this->directory_path . 'includes/class-show-history.php' );
 		}
-	} /* includes() */
+	}
 
 	/**
 	 * Register JS files.
@@ -165,7 +166,7 @@ class EDD_User_History {
 	public function load_scripts() {
 		wp_enqueue_script( 'edduh-tracking', $this->directory_url . 'assets/js/tracking.js', array( 'jquery' ), '1.2.0' );
 		wp_localize_script( 'edduh-tracking', 'edduh', array(
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
 			'currentUrl' => home_url( add_query_arg( null, null ) ),
 		) );
 	}
@@ -178,7 +179,6 @@ class EDD_User_History {
 	 * @since 1.0.0
 	 */
 	public function maybe_disable_plugin() {
-
 		if ( ! $this->meets_requirements() ) {
 			// Display our error
 			echo '<div id="message" class="error">';
@@ -188,8 +188,7 @@ class EDD_User_History {
 			// Deactivate our plugin
 			deactivate_plugins( $this->basename );
 		}
-
-	} /* maybe_disable_plugin() */
+	}
 
 	/**
 	 * Check if all plugin requirements are met.
@@ -200,7 +199,7 @@ class EDD_User_History {
 	 */
 	private function meets_requirements() {
 		return ( function_exists( 'EDD' ) && defined( 'EDD_VERSION' ) && version_compare( EDD_VERSION, '1.9.0', '>=' ) );
-	} /* meets_requirements() */
+	}
 
 	/**
 	 * Run an update routine for the plugin.
@@ -208,7 +207,6 @@ class EDD_User_History {
 	 * @since 1.6.0
 	 */
 	function maybe_update_plugin() {
-
 		// Bail early if not on an admin page
 		if ( ! is_admin() ) {
 			return;
@@ -223,17 +221,20 @@ class EDD_User_History {
 			do_action( 'edduh_plugin_update', $stored_db_version, $this->version );
 			update_option( 'edduh_plugin_db_version', $this->version );
 		}
-
-	} /* maybe_update_plugin() */
+	}
 }
 
 /**
- * Returns the main instance of edduh.
+ * Returns the main instance of EDD_User_History.
  *
  * @since  1.6.0
- * @return WooCommerce
+ * @return EDD_User_History
  */
 function edd_user_history() {
+	if ( ! class_exists( 'Easy_Digital_Downloads' ) ) {
+		return null;
+	}
+
 	return EDD_User_History::instance();
 }
-edd_user_history();
+add_action( 'plugins_loaded', 'edd_user_history', 10 );

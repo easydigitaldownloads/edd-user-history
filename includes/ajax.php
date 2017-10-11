@@ -1,12 +1,15 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * AJAX Helper to track user history.
  *
  * @since 1.6.0
  */
 function edduh_ajax_track_history() {
-
 	$page_url = isset( $_REQUEST['page_url'] ) ? esc_url( urldecode( $_REQUEST['page_url'] ) ) : false;
 	$referrer = isset( $_REQUEST['referrer'] ) ? esc_url( urldecode( $_REQUEST['referrer'] ) ) : false;
 

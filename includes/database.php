@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Create custom database table.
  *
@@ -17,15 +21,20 @@ function edduh_setup_custom_table() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 	$sql = "
-		CREATE TABLE {$wpdb->prefix}edduh_page_history (
-			user_hash varchar(23) NOT NULL,
+		CREATE TABLE {$wpdb->prefix}edd_uh_page_history (
+			user_hash varchar(32) NOT NULL,
 			page_history longtext,
 			last_updated timestamp NOT NULL,
 			PRIMARY KEY  (user_hash)
 		);
 		";
 
-	dbDelta( $sql );
+	// If WP_DEBUG is defined, show an error message, otherwise let's swallow any errors
+	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+		dbDelta( $sql );
+	} else {
+		@dbDelta( $sql );
+	}
 }
 add_action( 'edduh_plugin_update', 'edduh_setup_custom_table' );
 
@@ -59,13 +68,10 @@ function edduh_unschedule_garbage_collection() {
  */
 function edduh_garbage_collection() {
 	global $wpdb;
-	$wpdb->query( $wpdb->prepare(
-		"
-		DELETE FROM {$wpdb->prefix}edduh_page_history
+	$wpdb->query( $wpdb->prepare( "
+		DELETE FROM {$wpdb->prefix}edd_uh_page_history
 		WHERE last_updated <= %s
-		",
-		date( 'Y-m-d H:i:s', time( '-1 week' ) )
-	) );
+		", date( 'Y-m-d H:i:s', time( '-1 week' ) ) ) );
 }
 add_action( 'edduh_garbage_collection', 'edduh_garbage_collection' );
 
@@ -75,19 +81,17 @@ add_action( 'edduh_garbage_collection', 'edduh_garbage_collection' );
  * @since  1.6.0
  *
  * @param  string $user_hash User hash.
+ *
  * @return array             Page history (or empty array).
  */
 function edduh_get_page_history( $user_hash = '' ) {
 	global $wpdb;
 
-	$result = $wpdb->get_var( $wpdb->prepare(
-		"
+	$result = $wpdb->get_var( $wpdb->prepare( "
 		SELECT page_history
-		FROM {$wpdb->prefix}edduh_page_history
+		FROM {$wpdb->prefix}edd_uh_page_history
 		WHERE user_hash = %s
-		",
-		$user_hash
-	) );
+		", $user_hash ) );
 
 	$result = empty( $result ) ? array() : json_decode( $result );
 
@@ -104,19 +108,15 @@ function edduh_get_page_history( $user_hash = '' ) {
  */
 function edduh_set_page_history( $user_hash = '', $page_history = array() ) {
 	global $wpdb;
-	$wpdb->replace(
-		$wpdb->prefix . 'edduh_page_history',
-		array(
-			'user_hash' => $user_hash,
-			'page_history' => json_encode( $page_history ),
-			'last_updated' => date( 'Y-m-d H:i:s' ),
-		),
-		array(
-			'%s',
-			'%s',
-			'%s',
-		)
-	);
+	$wpdb->replace( $wpdb->prefix . 'edd_uh_page_history', array(
+		'user_hash'    => $user_hash,
+		'page_history' => json_encode( $page_history ),
+		'last_updated' => date( 'Y-m-d H:i:s' ),
+	), array(
+		'%s',
+		'%s',
+		'%s',
+	) );
 }
 
 /**
@@ -128,9 +128,5 @@ function edduh_set_page_history( $user_hash = '', $page_history = array() ) {
  */
 function edduh_delete_page_history( $user_hash = '' ) {
 	global $wpdb;
-	$wpdb->delete(
-		$wpdb->prefix . 'edduh_page_history',
-		array( 'user_hash' => $user_hash ),
-		array( '%s' )
-	);
+	$wpdb->delete( $wpdb->prefix . 'edd_uh_page_history', array( 'user_hash' => $user_hash ), array( '%s' ) );
 }
