@@ -88,7 +88,7 @@ class EDDUH_Show_History {
 			$output .= '<table class="wp-list-table widefat fixed striped">';
 				$output .= '<thead>';
 					$output .= '<tr>';
-						$output .= '<th>' . __( 'URL', 'edduh' ) . '</th>';
+						$output .= '<th class="column-primary">' . __( 'URL', 'edduh' ) . '</th>';
 						$output .= '<th>' . __( 'Timestamp', 'edduh' ) . '</th>';
 						$output .= '<th>' . __( 'Time elapsed', 'edduh' ) . '</th>';
 						$output .= '<th>' . __( 'Total', 'edduh' ) . '</th>';
@@ -104,7 +104,7 @@ class EDDUH_Show_History {
 					}
 
 					$output .= '<tr>';
-						$output .= '<td>' . ( $key + 1 ) . '. <a href="' . esc_url( $history['url'] ) . '" target="_blank">' . esc_url( $history['url'] ) . '</a></td>';
+						$output .= '<td class="column-primary">' . ( $key + 1 ) . '. <a href="' . esc_url( $history['url'] ) . '" target="_blank">' . esc_url( $history['url'] ) . '</a></td>';
 						if ( $history['time'] ) {
 							$output .= '<td>' . date( 'Y/m/d \&\n\d\a\s\h\; h:i:sa', ( $history['time'] + get_option( 'gmt_offset' ) * 3600 ) ) . '</td>';
 						} else {
@@ -164,7 +164,7 @@ class EDDUH_Show_History {
 		$output .= '<table class="wp-list-table widefat fixed striped">';
 			$output .= '<thead>';
 				$output .= '<tr>';
-					$output .= '<th>' . __( 'Order Number', 'edduh' ) . '</th>';
+					$output .= '<th class="column-primary">' . __( 'Order Number', 'edduh' ) . '</th>';
 					$output .= '<th>' . __( 'Order Date', 'edduh' ) . '</th>';
 					$output .= '<th>' . __( 'Order Status', 'edduh' ) . '</th>';
 					$output .= '<th>' . __( 'Order Total', 'edduh' ) . '</th>';
@@ -179,7 +179,7 @@ class EDDUH_Show_History {
 				$current = $payment->ID == $payment_id ? ' style="background: #ffc; font-weight: bold"' : '';
 
 				$output .= '<tr' . $current . '>';
-					$output .= '<td>' . ( $key + 1 ) . '. <a href="' . admin_url( "edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id={$payment->ID}" ) . '">' . sprintf( __( 'Order %1$s', 'edduh' ), edd_get_payment_number( $payment->ID ) ) . '</a></td>';
+					$output .= '<td class="column-primary">' . ( $key + 1 ) . '. <a href="' . admin_url( "edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id={$payment->ID}" ) . '">' . sprintf( __( 'Order %1$s', 'edduh' ), edd_get_payment_number( $payment->ID ) ) . '</a></td>';
 					$output .= '<td>' . date( 'Y-m-d h:ia', strtotime( $payment->post_date ) ) . '</td>';
 					$output .= '<td>' . edd_get_payment_status( $payment, true ) . '</td>';
 					$output .= '<td>' . edd_currency_filter( edd_format_amount( edd_get_payment_amount( $payment->ID ) ) ) . '</td>';
