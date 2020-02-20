@@ -85,43 +85,41 @@ class EDDUH_Show_History {
 				$output .= '<p>' . sprintf( __( 'Original search query: %s', 'edduh' ), '<strong><mark>' . $search_history . '</mark></strong>' ) . '</p>';
 			}
 
-			$output .= '<table class="wp-list-table widefat fixed striped">';
-				$output .= '<thead>';
-					$output .= '<tr>';
-						$output .= '<th class="column-primary">' . __( 'URL', 'edduh' ) . '</th>';
-						$output .= '<th>' . __( 'Timestamp', 'edduh' ) . '</th>';
-						$output .= '<th>' . __( 'Time elapsed', 'edduh' ) . '</th>';
-						$output .= '<th>' . __( 'Total', 'edduh' ) . '</th>';
-					$output .= '</tr>';
-				$output .= '</thead>';
+			$output .= '<table style="width:100%; border:1px solid ' . $this->get_admin_color_scheme()[1] . ';" cellpadding="0" cellspacing="0" border="0">';
+			$output .= '<tr>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px; width:55%;">' . __( 'URL', 'edduh' ) . '</th>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px; width:15%;">' . __( 'Timestamp', 'edduh' ) . '</th>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:right; padding:10px; width:15%;">' . __( 'Time elapsed', 'edduh' ) . '</th>';
+			$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:right; padding:10px; width:15%;">' . __( 'Total', 'edduh' ) . '</th>';
+			$output .= '</tr>';
 
-				$output .= '<tbody>';
-				foreach ( $browsing_history as $key => $history ) {
-					// Don't output the very last item.
-					// This is always the internal 'Order Complete' item.
-					if ( end( $browsing_history ) == $history ) {
-						continue;
-					}
-
-					$output .= '<tr>';
-						$output .= '<td class="column-primary">' . ( $key + 1 ) . '. <a href="' . esc_url( $history['url'] ) . '" target="_blank">' . esc_url( $history['url'] ) . '</a></td>';
-						if ( $history['time'] ) {
-							$output .= '<td>' . date( 'Y/m/d \&\n\d\a\s\h\; h:i:sa', ( $history['time'] + get_option( 'gmt_offset' ) * 3600 ) ) . '</td>';
-						} else {
-							$output .= '<td>' . __( 'N/A', 'edduh' ) . '</td>';
-						}
-						$next   = isset( $browsing_history[ $key + 1 ] ) ? $browsing_history[ $key + 1 ] : end( $browsing_history );
-						$output .= '<td>' . rzen_edduh_calculate_elapsed_time( $history['time'], $next['time'] ) . '</td>';
-						$output .= '<td>' . rzen_edduh_calculate_elapsed_time( $referrer['time'], $next['time'] ) . '</td>';
-					$output .= '</tr>';
+			foreach ( $browsing_history as $key => $history ) {
+				// Don't output the very last item.
+				// This is always the internal 'Order Complete' item.
+				if ( end( $browsing_history ) == $history ) {
+					continue;
 				}
 
-				$output .= '</tbody>';
+				$alt    = $key % 2 ? ' style="background: #f7f7f7;"' : '';
+				$output .= '<tr' . $alt . '>';
+				$output .= '<td style="text-align:left; padding:10px;">' . ( $key + 1 ) . '. <a href="' . esc_url( $history['url'] ) . '" target="_blank">' . esc_url( $history['url'] ) . '</a></td>';
+				if ( $history['time'] ) {
+					$output .= '<td style="text-align:left; padding:10px;">' . date( 'Y/m/d \&\n\d\a\s\h\; h:i:sa', ( $history['time'] + get_option( 'gmt_offset' ) * 3600 ) ) . '</td>';
+				} else {
+					$output .= '<td style="text-align:left; padding:10px;">' . __( 'N/A', 'edduh' ) . '</td>';
+				}
+				$next   = isset( $browsing_history[ $key + 1 ] ) ? $browsing_history[ $key + 1 ] : end( $browsing_history );
+				$output .= '<td style="text-align:right; padding:10px;">' . rzen_edduh_calculate_elapsed_time( $history['time'], $next['time'] ) . '</td>';
+				$output .= '<td style="text-align:right; padding:10px;">' . rzen_edduh_calculate_elapsed_time( $referrer['time'], $next['time'] ) . '</td>';
+				$output .= '</tr>';
+			}
 			$output .= '</table>';
 
 			// Output total elapsed time
 			$final_entry = end( $browsing_history );
-			$output      .= '<p>' . sprintf( __( '<strong>Total Time Elapsed:</strong> %s', 'edduh' ), rzen_edduh_calculate_elapsed_time( $referrer['time'], $final_entry['time'] ) ) . '</p>';
+			$output      .= '<p>';
+			$output      .= sprintf( __( '<strong>Total Time Elapsed:</strong> %s', 'edduh' ), rzen_edduh_calculate_elapsed_time( $referrer['time'], $final_entry['time'] ) );
+			$output      .= '</p>';
 		} else {
 			$output .= '<p><em>' . __( 'No page history collected.', 'edduh' ) . '</em></p>';
 		}
@@ -161,41 +159,39 @@ class EDDUH_Show_History {
 
 		$output .= sprintf( '<p>%s</p>', __( 'Below is every order this customer has completed, including this one (highlighted).', 'edduh' ) );
 
-		$output .= '<table class="wp-list-table widefat fixed striped">';
-			$output .= '<thead>';
-				$output .= '<tr>';
-					$output .= '<th class="column-primary">' . __( 'Order Number', 'edduh' ) . '</th>';
-					$output .= '<th>' . __( 'Order Date', 'edduh' ) . '</th>';
-					$output .= '<th>' . __( 'Order Status', 'edduh' ) . '</th>';
-					$output .= '<th>' . __( 'Order Total', 'edduh' ) . '</th>';
-				$output .= '</tr>';
-			$output .= '</thead>';
+		$output .= '<table style="width:100%; border:1px solid ' . $this->get_admin_color_scheme()[1] . ';" cellpadding="0" cellspacing="0" border="0">';
+		$output .= '<tr>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px;">' . __( 'Order Number', 'edduh' ) . '</th>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px;">' . __( 'Order Date', 'edduh' ) . '</th>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align:left; padding:10px;">' . __( 'Order Status', 'edduh' ) . '</th>';
+		$output .= '<th style="background:' . $this->get_admin_color_scheme()[1] . '; color:#fff; text-align: right; padding:10px;">' . __( 'Order Total', 'edduh' ) . '</th>';
+		$output .= '</tr>';
 
 		if ( ! empty( $payments ) ) {
-			$output .= '<tbody>';
 			foreach ( $payments as $key => $payment ) {
 				$payment = get_post( $payment->ID );
-
-				$current = $payment->ID == $payment_id ? ' style="background: #ffc; font-weight: bold"' : '';
+				$alt     = $key % 2 ? ' style="background: #f7f7f7;"' : '';
+				$current = $payment->ID == $payment_id ? ' style="background: #ffc; font-weight: bold"' : $alt;
 
 				$output .= '<tr' . $current . '>';
-					$output .= '<td class="column-primary">' . ( $key + 1 ) . '. <a href="' . admin_url( "edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id={$payment->ID}" ) . '">' . sprintf( __( 'Order %1$s', 'edduh' ), edd_get_payment_number( $payment->ID ) ) . '</a></td>';
-					$output .= '<td>' . date( 'Y-m-d h:ia', strtotime( $payment->post_date ) ) . '</td>';
-					$output .= '<td>' . edd_get_payment_status( $payment, true ) . '</td>';
-					$output .= '<td>' . edd_currency_filter( edd_format_amount( edd_get_payment_amount( $payment->ID ) ) ) . '</td>';
+				$output .= '<td style="text-align:left; padding:10px;">' . ( $key + 1 ) . '. <a href="' . admin_url( "edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id={$payment->ID}" ) . '">' . sprintf( __( 'Order %1$s', 'edduh' ), edd_get_payment_number( $payment->ID ) ) . '</a></td>';
+				$output .= '<td style="text-align:left; padding:10px;">' . date( 'Y-m-d h:ia', strtotime( $payment->post_date ) ) . '</td>';
+				$output .= '<td style="text-align:left; padding:10px;">' . edd_get_payment_status( $payment, true ) . '</td>';
+				$output .= '<td style="text-align:right; padding:10px;">' . edd_currency_filter( edd_format_amount( edd_get_payment_amount( $payment->ID ) ) ) . '</td>';
 				$output .= '</tr>';
 
 				if ( 'publish' == $payment->post_status ) {
 					$lifetime_total += edd_get_payment_amount( $payment->ID );
 				}
 			}
-			$output .= '</tbody>';
 		}
 
 		$output .= '</table>';
 
 		// Output total lifetime value
-		$output .= '<p>' . sprintf( __( '<strong>Actual Lifetime Customer Value:</strong> %s', 'edduh' ), '<span style="color:#7EB03B; font-size:1.2em; font-weight:bold;">' . edd_currency_filter( edd_format_amount( $lifetime_total ) ) . '</span>' ) . '</p>';
+		$output .= '<p>';
+		$output .= sprintf( __( '<strong>Actual Lifetime Customer Value:</strong> %s', 'edduh' ), '<span style="color:#7EB03B; font-size:1.2em; font-weight:bold;">' . edd_currency_filter( edd_format_amount( $lifetime_total ) ) . '</span>' );
+		$output .= '</p>';
 
 		$output .= '</div>';
 
