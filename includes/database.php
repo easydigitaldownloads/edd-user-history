@@ -71,7 +71,7 @@ function edduh_garbage_collection() {
 	$wpdb->query( $wpdb->prepare( "
 		DELETE FROM {$wpdb->prefix}edd_uh_page_history
 		WHERE last_updated <= %s
-		", date( 'Y-m-d H:i:s', time( '-1 week' ) ) ) );
+		", date( 'Y-m-d H:i:s', strtotime( '-1 week' ) ) ) );
 }
 add_action( 'edduh_garbage_collection', 'edduh_garbage_collection' );
 
