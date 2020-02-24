@@ -3,7 +3,7 @@
  * Plugin Name: Easy Digital Downloads - User History
  * Plugin URI: https://easydigitaldownloads.com/downloads/user-history
  * Description: Track and store customer browsing history with their order.
- * Version: 1.6.0
+ * Version: 1.6.1
  * Author: Easy Digital Downloads
  * Author URI: https://easydigitaldownloads.com
  * License: GPL2
@@ -53,7 +53,7 @@ class EDD_User_History {
 	 * @since 1.6.0
 	 * @var string
 	 */
-	var $version = '1.6.0';
+	var $version = '1.6.1';
 
 	/**
 	 * Main EDD_User_History Instance
