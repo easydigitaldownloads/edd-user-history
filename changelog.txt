@@ -1,3 +1,7 @@
+1.6.1 - 2020/02/19
+    * Fix: Corrected an issue which caused the query to clean up user history data.
+    * Fix: Improved mobile responsiveness of the user history on the view order details screen.
+
 1.6.0 - 2017/06/30
 	* Introduced JS-based tracking to circumvent page caching.
 	* Introduced stand-alone database table to move active history away from cookie storage and transient dependency
