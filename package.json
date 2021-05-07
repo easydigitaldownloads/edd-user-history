@@ -1,5 +1,5 @@
 {
-	"name": "EDD_UserHistory",
+	"name": "edd-user-history",
 	"version": "1.6.0",
 	"description": "Track and store customer browsing history with their order.",
 	"homepage": "https://easydigitaldownloads.com/downloads/user-history",
@@ -10,39 +10,9 @@
 	},
 	"license": "GPLv2+",
 	"private": true,
-	"directories": {
-		"js": "",
-		"sass": "",
-		"css": "",
-		"build": "./build",
-		"languages": "./languages"
-	},
-	"pot": {
-		"type": "wp-plugin",
-		"textdomain": "edduh",
-		"src": "edd-user-history.php",
-		"header": {
-			"bugs": "https://easydigitaldownloads.com/support/",
-			"team": "Easy Digital Downloads <support@easydigitaldownloads.com>",
-			"last_translator": "Easy Digital Downloads <support@easydigitaldownloads.com>"
-		}
-	},
-	"devDependencies": {
-		"grunt": "~0.4.5",
-		"grunt-checktextdomain": "~1.0.0",
-		"grunt-contrib-clean": "~0.5.0",
-		"grunt-contrib-compress": "~0.8.0",
-		"grunt-contrib-copy": "~0.5.0",
-		"grunt-contrib-cssmin": "~1.0.0",
-		"grunt-contrib-uglify": "~2.0.0",
-		"grunt-exec": "~0.4.5",
-		"grunt-newer": "^1.1.0",
-		"grunt-phpcs": "^0.4.0",
-		"grunt-potomo": "~3.2.0",
-		"grunt-text-replace": "^0.4.0",
-		"grunt-wp-i18n": "~0.5.1",
-		"grunt-wp-readme-to-markdown": "^0.9.0",
-		"load-grunt-config": "0.16.0",
-		"load-grunt-tasks": "~0.3.0"
+	"scripts": {
+		"build": "npm run i18n",
+		"dev": "cross-env NODE_ENV=production wp-scripts start",
+		"i18n": "wp i18n make-pot . languages/edduh.pot --domain=edduh --headers='{\"Report-Msgid-Bugs-To\": \"https://easydigitaldownloads.com/support\"}'"
 	}
 }

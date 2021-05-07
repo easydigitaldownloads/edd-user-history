@@ -1,134 +1,136 @@
-# Copyright (C) 2017 Easy Digital Downloads
-# This file is distributed under the GPL2.
+# Copyright (C) 2021 Easy Digital Downloads
+# This file is distributed under the same license as the Easy Digital Downloads - User History plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Easy Digital Downloads - User History 1.6.0\n"
-"Report-Msgid-Bugs-To: https://easydigitaldownloads.com/support/\n"
-"POT-Creation-Date: 2017-10-03 21:52:47+00:00\n"
+"Project-Id-Version: Easy Digital Downloads - User History 1.6.1\n"
+"Report-Msgid-Bugs-To: https://easydigitaldownloads.com/support\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Easy Digital Downloads <support@easydigitaldownloads.com>\n"
-"Language-Team: Easy Digital Downloads <support@easydigitaldownloads.com>\n"
-"X-Generator: grunt-wp-i18n 0.5.4\n"
-"X-Poedit-KeywordsList: "
-"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
-"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
-"Language: en_US\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Country: United States\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-Basepath: ../\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-Bookmarks: \n"
-"X-Textdomain-Support: yes\n"
+"POT-Creation-Date: 2021-05-07T10:16:55+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: edduh\n"
+
+#. Plugin Name of the plugin
+msgid "Easy Digital Downloads - User History"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://easydigitaldownloads.com/downloads/user-history"
+msgstr ""
+
+#. Description of the plugin
+msgid "Track and store customer browsing history with their order."
+msgstr ""
+
+#. Author of the plugin
+msgid "Easy Digital Downloads"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://easydigitaldownloads.com"
+msgstr ""
 
 #: edd-user-history.php:185
-msgid ""
-"EDD User History requires Easy Digital Downloads 1.9.0 or greater and has "
-"been <a href=\"%s\">deactivated</a>. Please install, activate, or update "
-"Easy Digital Downloads and then reactivate this plugin."
+msgid "EDD User History requires Easy Digital Downloads 1.9.0 or greater and has been <a href=\"%s\">deactivated</a>. Please install, activate, or update Easy Digital Downloads and then reactivate this plugin."
 msgstr ""
 
-#: includes/show-history.php:28 includes/show-history.php:241
+#: includes/class-show-history.php:28
+#: includes/class-show-history.php:247
 msgid "Customer Browsing History"
 msgstr ""
 
-#: includes/show-history.php:29 includes/show-history.php:257
+#: includes/class-show-history.php:29
+#: includes/class-show-history.php:263
 msgid "Customer Purchase History"
 msgstr ""
 
-#: includes/show-history.php:71
-msgid ""
-"Below is every page the customer visited, in order, prior to completing "
-"this transaction."
+#: includes/class-show-history.php:71
+msgid "Below is every page the customer visited, in order, prior to completing this transaction."
 msgstr ""
 
-#: includes/show-history.php:79
+#: includes/class-show-history.php:79
 msgid "<strong>Referrer:</strong> %s"
 msgstr ""
 
-#: includes/show-history.php:85
+#: includes/class-show-history.php:85
 msgid "Original search query: %s"
 msgstr ""
 
-#: includes/show-history.php:90
+#: includes/class-show-history.php:90
 msgid "URL"
 msgstr ""
 
-#: includes/show-history.php:91
+#: includes/class-show-history.php:91
 msgid "Timestamp"
 msgstr ""
 
-#: includes/show-history.php:92
+#: includes/class-show-history.php:92
 msgid "Time elapsed"
 msgstr ""
 
-#: includes/show-history.php:93
+#: includes/class-show-history.php:93
 msgid "Total"
 msgstr ""
 
-#: includes/show-history.php:109 includes/utilities.php:52
+#: includes/class-show-history.php:109
+#: includes/utilities.php:52
 msgid "N/A"
 msgstr ""
 
-#: includes/show-history.php:121
+#: includes/class-show-history.php:121
 msgid "<strong>Total Time Elapsed:</strong> %s"
 msgstr ""
 
-#: includes/show-history.php:124
+#: includes/class-show-history.php:124
 msgid "No page history collected."
 msgstr ""
 
-#: includes/show-history.php:160
-msgid ""
-"Below is every order this customer has completed, including this one "
-"(highlighted)."
+#: includes/class-show-history.php:160
+msgid "Below is every order this customer has completed, including this one (highlighted)."
 msgstr ""
 
-#: includes/show-history.php:164
+#: includes/class-show-history.php:164
 msgid "Order Number"
 msgstr ""
 
-#: includes/show-history.php:165
+#: includes/class-show-history.php:165
 msgid "Order Date"
 msgstr ""
 
-#: includes/show-history.php:166
+#: includes/class-show-history.php:166
 msgid "Order Status"
 msgstr ""
 
-#: includes/show-history.php:167
+#: includes/class-show-history.php:167
 msgid "Order Total"
 msgstr ""
 
-#: includes/show-history.php:177
+#: includes/class-show-history.php:177
 msgid "Order %1$s"
 msgstr ""
 
-#: includes/show-history.php:193
+#: includes/class-show-history.php:193
 msgid "<strong>Actual Lifetime Customer Value:</strong> %s"
 msgstr ""
 
-#: includes/show-history.php:227
+#: includes/class-show-history.php:227
 msgid "Display the customer's browsing history prior to this transaction."
 msgstr ""
 
-#: includes/show-history.php:228
+#: includes/class-show-history.php:231
 msgid "Display the customer's purchase history and total lifetime value."
 msgstr ""
 
-#: includes/track-history.php:46
+#: includes/class-track-history.php:46
 msgid "Direct Traffic"
 msgstr ""
 
-#: includes/track-history.php:112
+#: includes/class-track-history.php:112
 msgid "Order Complete"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid "Track and store customer browsing history with their order."
 msgstr ""
 
 #: includes/utilities.php:63
