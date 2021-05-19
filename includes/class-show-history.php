@@ -3,7 +3,7 @@
  * Functionality for viewing customer history.
  *
  * @package EDD User History
- * @author  Easy Digital Downloads, LLC
+ * @author  Sandhills Development, LLC
  */
 
 class EDDUH_Show_History {

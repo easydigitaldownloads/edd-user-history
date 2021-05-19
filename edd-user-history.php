@@ -4,15 +4,15 @@
  * Plugin URI: https://easydigitaldownloads.com/downloads/user-history
  * Description: Track and store customer browsing history with their order.
  * Version: 1.6.1
- * Author: Easy Digital Downloads
- * Author URI: https://easydigitaldownloads.com
+ * Author: Sandhills Development, LLC
+ * Author URI: https://sandhillsdev.com
  * License: GPL2
  * Text Domain: edduh
  * Domain Path: languages
  */
 
 /*
-Copyright 2017 Easy Digital Downloads, LLC
+Copyright 2021 Sandhills Development, LLC
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -109,7 +109,7 @@ class EDD_User_History {
 	 */
 	public function licensed_updates() {
 		if ( class_exists( 'EDD_License' ) ) {
-			$license = new EDD_License( __FILE__, 'User History', $this->version, 'EDD Team' );
+			$license = new EDD_License( __FILE__, 'User History', $this->version, 'Sandhills Development, LLC', null, null, 3408 );
 		}
 	}
 
