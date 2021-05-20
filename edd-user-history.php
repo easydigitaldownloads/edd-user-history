@@ -207,6 +207,8 @@ class EDD_User_History {
 	 * @since 1.6.0
 	 */
 	function maybe_update_plugin() {
+
+		require_once $this->directory_path . '/includes/updates.php';
 		// Bail early if not on an admin page
 		if ( ! is_admin() ) {
 			return;
@@ -217,7 +219,6 @@ class EDD_User_History {
 
 		// Only trigger updates when stored version is lower than current version
 		if ( version_compare( $stored_db_version, $this->version, '<' ) ) {
-			require_once( $this->directory_path . '/includes/updates.php' );
 			do_action( 'edduh_plugin_update', $stored_db_version, $this->version );
 			update_option( 'edduh_plugin_db_version', $this->version );
 		}
