@@ -132,7 +132,7 @@ class EDDUH_Show_History {
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param int $payment_id Payment post ID.
+	 * @param int $payment_id Payment ID.
 	 *
 	 * @return mixed string|bool Purchase history output or false if no payment ID supplied.
 	 */
@@ -144,14 +144,15 @@ class EDDUH_Show_History {
 		$payment_meta = edd_get_payment_meta( $payment_id );
 
 		$lifetime_total = 0;
-		$payments       = get_posts( array(
-			'numberposts' => -1,
-			'meta_key'    => '_edd_payment_user_email',
-			'meta_value'  => $payment_meta['email'],
-			'post_type'   => 'edd_payment',
-			'order'       => 'ASC',
-			'post_status' => 'any',
-		) );
+		$payments       = edd_get_payments(
+			array(
+				'numberposts' => -1,
+				'meta_key'    => '_edd_payment_user_email',
+				'meta_value'  => $payment_meta['email'],
+				'order'       => 'ASC',
+				'status'      => 'any',
+			)
+		);
 
 		$output = '';
 		$output .= '<div class="products-header spacing-wrapper clearfix"></div>';
@@ -169,18 +170,18 @@ class EDDUH_Show_History {
 
 		if ( ! empty( $payments ) ) {
 			foreach ( $payments as $key => $payment ) {
-				$payment = get_post( $payment->ID );
 				$alt     = $key % 2 ? ' style="background: #f7f7f7;"' : '';
 				$current = $payment->ID == $payment_id ? ' style="background: #ffc; font-weight: bold"' : $alt;
+				$date    = ! empty( $payment->date_completed ) ? $payment->date_completed : $payment->completed_date;
 
 				$output .= '<tr' . $current . '>';
 				$output .= '<td style="text-align:left; padding:10px;">' . ( $key + 1 ) . '. <a href="' . admin_url( "edit.php?post_type=download&page=edd-payment-history&view=view-order-details&id={$payment->ID}" ) . '">' . sprintf( __( 'Order %1$s', 'edduh' ), edd_get_payment_number( $payment->ID ) ) . '</a></td>';
-				$output .= '<td style="text-align:left; padding:10px;">' . date( 'Y-m-d h:ia', strtotime( $payment->post_date ) ) . '</td>';
+				$output .= '<td style="text-align:left; padding:10px;">' . date( 'Y-m-d h:ia', strtotime( $date ) ) . '</td>';
 				$output .= '<td style="text-align:left; padding:10px;">' . edd_get_payment_status( $payment, true ) . '</td>';
 				$output .= '<td style="text-align:right; padding:10px;">' . edd_currency_filter( edd_format_amount( edd_get_payment_amount( $payment->ID ) ) ) . '</td>';
 				$output .= '</tr>';
 
-				if ( 'publish' == $payment->post_status ) {
+				if ( in_array( $payment->status, array( 'publish', 'complete' ), true ) ) {
 					$lifetime_total += edd_get_payment_amount( $payment->ID );
 				}
 			}
@@ -239,7 +240,7 @@ class EDDUH_Show_History {
 	 *
 	 * @since  1.5.0
 	 *
-	 * @param  integer $payment_id Payment post ID.
+	 * @param  integer $payment_id Payment ID.
 	 *
 	 * @return string              HTML markup.
 	 */
@@ -255,7 +256,7 @@ class EDDUH_Show_History {
 	 *
 	 * @since  1.5.0
 	 *
-	 * @param  integer $payment_id Payment post ID.
+	 * @param  integer $payment_id Payment ID.
 	 *
 	 * @return string              HTML markup.
 	 */
