@@ -21,6 +21,7 @@ class EDDUH_Track_History {
 	public function __construct() {
 		add_action( 'edduh_visited_url', array( $this, 'update_customer_history' ), 10, 3 );
 		add_filter( 'edd_payment_meta', array( $this, 'save_customer_history' ) );
+		add_action( 'edd_built_order', array( $this, 'add_user_history_order_meta' ) );
 
 		// Uncomment the following action to enable devmode
 		// add_action( 'get_header', array( $this, 'devmode' ) );
@@ -73,7 +74,11 @@ class EDDUH_Track_History {
 	 *
 	 * @return array $payment_meta
 	 */
-	public function save_customer_history( $payment_meta = array() ) {
+	public function save_customer_history( $payment_meta ) {
+
+		if ( function_exists( 'edd_add_order_meta' ) ) {
+			return $payment_meta;
+		}
 		// Bail early if not on the purchase screen
 		// Fixes issue as result of https://github.com/easydigitaldownloads/easy-digital-downloads/issues/5490#issuecomment-283978899
 		if ( ! did_action( 'edd_purchase' ) ) {
@@ -81,45 +86,78 @@ class EDDUH_Track_History {
 		}
 
 		// Grab browsing history from the current session
+		$customer_history = $this->get_sanitized_history();
+
+		if ( ! empty( $customer_history ) ) {
+			// Store sanitized history as post meta
+			$payment_meta['user_history'] = $customer_history;
+		}
+		EDDUH_Cookie_Helper::delete_cookie();
+
+		return $payment_meta;
+	}
+
+	/**
+	 * Adds the user history to the order meta in EDD 3.0.
+	 *
+	 * @since 1.6.2
+	 * @param int $order_id
+	 * @return void
+	 */
+	public function add_user_history_order_meta( $order_id ) {
+		// Grab browsing history from the current session
+		$customer_history = $this->get_sanitized_history();
+
+		if ( ! empty( $customer_history ) ) {
+			// Store sanitized history as post meta
+			edd_add_order_meta( $order_id, 'user_history', $customer_history );
+		}
+		EDDUH_Cookie_Helper::delete_cookie();
+	}
+
+	/**
+	 * Gets the user history as a sanitized array of data.
+	 *
+	 * @since 1.6.2
+	 * @return array
+	 */
+	private function get_sanitized_history() {
+		// Setup a clean, safe array for the database
+		$sanitized_history = array();
+
+		// Grab browsing history from the current session
 		$customer_history = $this->get_customer_history();
 
 		// If browsing history was captured, sanitize and store the URLs
-		if ( is_array( $customer_history ) && ! empty( $customer_history ) ) {
-
-			// Setup a clean, safe array for the database
-			$sanitized_history = array();
-
-			// Sanitize the referrer a bit differently
-			// than the rest because it may not be a URL.
-			$referrer = array_shift( $customer_history );
-			if ( is_object( $referrer ) ) {
-				$sanitized_history[] = array(
-					'url'  => sanitize_text_field( $referrer->url ),
-					'time' => absint( $referrer->time ),
-				);
-			}
-
-			// Sanitize each additional URL
-			foreach ( $customer_history as $history ) {
-				$sanitized_history[] = array(
-					'url'  => esc_url_raw( $history->url ),
-					'time' => absint( $history->time ),
-				);
-			}
-
-			// Add one final timestamp for order complete
-			$sanitized_history[] = array(
-				'url'  => __( 'Order Complete', 'edduh' ),
-				'time' => time(),
-			);
-
-			// Store sanitized history as post meta
-			$payment_meta['user_history'] = $sanitized_history;
-			EDDUH_Cookie_Helper::delete_cookie();
-
+		if ( ! is_array( $customer_history ) || empty( $customer_history ) ) {
+			return $sanitized_history;
 		}
 
-		return $payment_meta;
+		// Sanitize the referrer a bit differently
+		// than the rest because it may not be a URL.
+		$referrer = array_shift( $customer_history );
+		if ( is_object( $referrer ) ) {
+			$sanitized_history[] = array(
+				'url'  => sanitize_text_field( $referrer->url ),
+				'time' => absint( $referrer->time ),
+			);
+		}
+
+		// Sanitize each additional URL
+		foreach ( $customer_history as $history ) {
+			$sanitized_history[] = array(
+				'url'  => esc_url_raw( $history->url ),
+				'time' => absint( $history->time ),
+			);
+		}
+
+		// Add one final timestamp for order complete
+		$sanitized_history[] = array(
+			'url'  => __( 'Order Complete', 'edduh' ),
+			'time' => time(),
+		);
+
+		return $sanitized_history;
 	}
 
 	/**
