@@ -43,7 +43,7 @@ function eeduh_30_migration( $order_id, $payment_meta, $meta ) {
 
 	edd_add_order_meta( $order_id, 'user_history', $user_history );
 	$migrated_meta = edd_get_order_meta( $order_id, 'payment_meta', true );
-	if ( $migrated_meta ) {
+	if ( is_array( $migrated_meta ) && ! empty( $migrated_meta ) ) {
 		unset( $migrated_meta['user_history'] );
 	}
 	if ( empty( $migrated_meta ) ) {
