@@ -64,8 +64,18 @@ class EDDUH_Show_History {
 			return false;
 		}
 
-		$payment_meta     = edd_get_payment_meta( $payment_id );
-		$browsing_history = isset( $payment_meta['user_history'] ) ? rzen_edduh_normalize_history_array( $payment_meta['user_history'] ) : array();
+		$browsing_history = array();
+		if ( function_exists( 'edd_get_order_meta' ) ) {
+			$order_meta = edd_get_order_meta( $payment_id, 'user_history', true );
+			if ( $order_meta ) {
+				$browsing_history = rzen_edduh_normalize_history_array( $order_meta );
+			}
+		} else {
+			$payment_meta = edd_get_payment_meta( $payment_id );
+			if ( ! empty( $payment_meta['user_history'] ) ) {
+				$browsing_history = rzen_edduh_normalize_history_array( $payment_meta['user_history'] );
+			}
+		}
 
 		$output = '';
 		$output .= sprintf( '<p>%s</p>', __( 'Below is every page the customer visited, in order, prior to completing this transaction.', 'edduh' ) );
