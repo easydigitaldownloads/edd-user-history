@@ -20,7 +20,7 @@ class EDDUH_Track_History {
 	 */
 	public function __construct() {
 		add_action( 'edduh_visited_url', array( $this, 'update_customer_history' ), 10, 3 );
-		add_action( 'edd_payment_meta', array( $this, 'save_customer_history' ) );
+		add_filter( 'edd_payment_meta', array( $this, 'save_customer_history' ) );
 
 		// Uncomment the following action to enable devmode
 		// add_action( 'get_header', array( $this, 'devmode' ) );
