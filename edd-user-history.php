@@ -208,12 +208,12 @@ class EDD_User_History {
 	 */
 	function maybe_update_plugin() {
 
-		require_once $this->directory_path . '/includes/updates.php';
 		// Bail early if not on an admin page
-		if ( ! is_admin() ) {
+		if ( ! is_admin() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			return;
 		}
 
+		require_once $this->directory_path . '/includes/updates.php';
 		// Get the stored and current plugin database versions
 		$stored_db_version = get_option( 'edduh_plugin_db_version', '0.0.0' );
 
