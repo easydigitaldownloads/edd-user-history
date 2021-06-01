@@ -3,7 +3,7 @@
  * Functionality for tracking and saving customer history.
  *
  * @package EDD User History
- * @author  Easy Digital Downloads, LLC
+ * @author  Sandhills Development, LLC
  * @license GPL2
  */
 
