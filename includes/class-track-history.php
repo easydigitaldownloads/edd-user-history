@@ -76,6 +76,7 @@ class EDDUH_Track_History {
 	 */
 	public function save_customer_history( $payment_meta ) {
 
+		// In EDD 3.0, this is handled by the add_user_history_order_meta method.
 		if ( function_exists( 'edd_add_order_meta' ) ) {
 			return $payment_meta;
 		}
