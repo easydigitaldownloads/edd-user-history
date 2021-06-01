@@ -70,10 +70,24 @@ class EDDUH_Show_History {
 			if ( $order_meta ) {
 				$browsing_history = rzen_edduh_normalize_history_array( $order_meta );
 			}
-		} else {
+		}
+		if ( empty( $browsing_history ) ) {
 			$payment_meta = edd_get_payment_meta( $payment_id );
 			if ( ! empty( $payment_meta['user_history'] ) ) {
 				$browsing_history = rzen_edduh_normalize_history_array( $payment_meta['user_history'] );
+
+				// In EDD 3.0, if this metadata exists, it was not migrated, so go ahead and migrate it now.
+				if ( function_exists( 'edd_add_order_meta' ) ) {
+					edd_add_order_meta( $payment_id, 'user_history', $payment_meta['user_history'] );
+					if ( is_array( $payment_meta ) && ! empty( $payment_meta ) ) {
+						unset( $payment_meta['user_history'] );
+					}
+					if ( empty( $payment_meta ) ) {
+						edd_delete_order_meta( $payment_id, 'payment_meta' );
+					} else {
+						edd_update_order_meta( $payment_id, 'payment_meta', $payment_meta );
+					}
+				}
 			}
 		}
 
