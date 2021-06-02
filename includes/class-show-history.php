@@ -79,9 +79,9 @@ class EDDUH_Show_History {
 				// In EDD 3.0, if this metadata exists, it was not migrated, so go ahead and migrate it now.
 				if ( function_exists( 'edd_add_order_meta' ) ) {
 					edd_add_order_meta( $payment_id, 'user_history', $payment_meta['user_history'] );
-					if ( is_array( $payment_meta ) && ! empty( $payment_meta ) ) {
-						unset( $payment_meta['user_history'] );
-					}
+
+					// Update the remaining payment meta, or delete if nothing is left.
+					unset( $payment_meta['user_history'] );
 					if ( empty( $payment_meta ) ) {
 						edd_delete_order_meta( $payment_id, 'payment_meta' );
 					} else {
