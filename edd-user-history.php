@@ -209,7 +209,7 @@ class EDD_User_History {
 	function maybe_update_plugin() {
 
 		// Bail early if not on an admin page
-		if ( ! is_admin() && ! ( defined( 'WP_CLI' ) || ! WP_CLI ) ) {
+		if ( ! is_admin() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			return;
 		}
 
