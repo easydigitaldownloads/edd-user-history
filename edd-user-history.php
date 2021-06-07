@@ -207,17 +207,18 @@ class EDD_User_History {
 	 * @since 1.6.0
 	 */
 	function maybe_update_plugin() {
+
 		// Bail early if not on an admin page
-		if ( ! is_admin() ) {
+		if ( ! is_admin() && ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			return;
 		}
 
+		require_once $this->directory_path . '/includes/updates.php';
 		// Get the stored and current plugin database versions
 		$stored_db_version = get_option( 'edduh_plugin_db_version', '0.0.0' );
 
 		// Only trigger updates when stored version is lower than current version
 		if ( version_compare( $stored_db_version, $this->version, '<' ) ) {
-			require_once( $this->directory_path . '/includes/updates.php' );
 			do_action( 'edduh_plugin_update', $stored_db_version, $this->version );
 			update_option( 'edduh_plugin_db_version', $this->version );
 		}
